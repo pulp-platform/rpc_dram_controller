@@ -1,0 +1,63 @@
+# Copyright 2022 ETH Zurich and University of Bologna.
+# Solderpad Hardware License, Version 0.51, see LICENSE for details.
+# SPDX-License-Identifier: SHL-0.51
+
+package:
+  name: rpc_dram_controller
+  authors:
+    - Thomas Benz <tbenz@iis.ee.ethz.ch> # Current maintainer
+    - Vaibhav Krishna <vakrishna@student.ethz.ch>
+    - Rui Zhou <ruzhou@student.ethz.ch>
+    - Chen Jinfan <jinfchen@student.ethz.ch>
+    - Chen Wang <chewang@student.ethz.ch>
+    - Jiawei Zhang <jiawzhang@student.ethz.ch>
+    - Suyang Song <susong@student.ethz.ch>
+    - Bowen Wang <bowwang@student.ethz.ch>
+
+
+dependencies:
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.0 }
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.35.0 }
+  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.9 }
+  register_interface: { git: "https://github.com/pulp-platform/register_interface.git", version: 0.3.1 }
+
+sources:
+  # Source files grouped in levels. Files in level 0 have no dependencies on files in this
+  # package. Files in level 1 only depend on files in level 0, files in level 2 on files in
+  # levels 1 and 0, etc. Files within a level are ordered alphabetically.
+  # Level 0
+  - src/controller_src/rpc_dram_phy/rpc_cmd_pkg.sv
+  - src/controller_src/rpc_config_path_pkg.sv
+  - src/rpc_ctrl_pkg.sv
+
+  - target: rtl
+    files:
+    - src/interface_src/buffer_wrapper.sv
+    - src/interface_src/cmd_splitter.sv
+    - src/interface_src/read_mask_generator.sv
+    - src/interface_src/write_mask_generator.sv
+    - src/interface_src/buffer_req.sv
+    - src/interface_src/buffer_resp.sv
+    - src/interface_src/sram_wrapper.sv
+    - src/interface_src/rpc_interface.sv
+    - src/interface_src/rpc_interface_synth_wrap.sv
+    - src/interface_src/axi_parallelizer.sv
+    - src/controller_src/rpc_dram_phy/tristate_shim.sv
+    - src/controller_src/rpc_dram_phy/rpc_cmd_decoder.sv
+    - src/controller_src/rpc_dram_phy/rpc_timing_fsm.sv
+    - src/controller_src/rpc_dram_phy/rpc_phy.sv
+    - src/controller_src/rpc_dram_phy/rpc_phy_controller.sv
+    - src/controller_src/rpc_dram_phy/rpc_cmd_fsm.sv
+    - src/controller_src/config_manager/zqc_timer.sv
+    - src/controller_src/config_manager/ref_timer.sv
+    - src/controller_src/config_manager/timer_starter.sv
+    - src/controller_src/config_manager/config_reg.sv
+    - src/controller_src/config_manager/rpc_config_manager.sv
+    - src/controller_src/rpc_controller.sv
+    - src/rpc.sv
+
+  - target: synthesis
+    files:
+       - src/controller_src/rpc_controller_synth_wrap.sv
+       - src/interface_src/rpc_interface_synth_wrap.sv
+       - src/rpc_synth_wrap.sv
