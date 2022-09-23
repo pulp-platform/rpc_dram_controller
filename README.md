@@ -17,3 +17,18 @@ Reduced Pin Count (RPC) DRAM chips. It is part of the PULP ecosystem.
 * [ ] Properly prefix all files, modules, types
 * [ ] Clearly divide controller and AXI interface. Harden interface between the two parts.
 * [ ] Adapt `Bender.yml` to use Levels to read the sources
+
+## Simulate
+
+You first need to get access to the memory model and have bender's binary in your PATH variable. Then, you might do:
+
+```
+$ bender update
+
+$ make scripts/compile.tcl
+
+$ vsim
+
+>> source scripts/compile.tcl
+>> source scripts/start.ctl
+```
