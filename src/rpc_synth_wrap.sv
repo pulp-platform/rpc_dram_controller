@@ -28,7 +28,7 @@ module rpc_synth_wrap #(
   parameter int unsigned PHY_CLOCK_PERIOD = 5,
   parameter int unsigned REG_ADDR_WIDTH = 48,
   parameter int unsigned REG_DATA_WIDTH = 32,
-  localparam int unsigned REG_STORBE_WIDTH = REG_DATA_WIDTH/8,
+  localparam int unsigned REG_STROBE_WIDTH = REG_DATA_WIDTH/8,
 
   // type dependency
   parameter type          axi_addr_t      = logic [AxiAddrWidth-1:0],
@@ -105,7 +105,7 @@ module rpc_synth_wrap #(
     input logic [REG_ADDR_WIDTH-1:0]      reg_addr_i, 
     input logic                           reg_write_i,  
     input logic [REG_DATA_WIDTH-1:0]      reg_wdata_i,  
-    input logic [REG_STORBE_WIDTH-1:0]    reg_wstrb_i,  
+    input logic [REG_STROBE_WIDTH-1:0]    reg_wstrb_i,  
     input logic                           reg_valid_i, 
 
     // Regbus Request Output
@@ -211,7 +211,7 @@ module rpc_synth_wrap #(
 
     typedef logic [REG_ADDR_WIDTH-1:0]   reg_addr_t;
     typedef logic [REG_DATA_WIDTH-1:0]   reg_data_t;
-    typedef logic [REG_STORBE_WIDTH-1:0] reg_strb_t;
+    typedef logic [REG_STROBE_WIDTH-1:0] reg_strb_t;
 
     typedef struct packed {
       reg_addr_t  addr;

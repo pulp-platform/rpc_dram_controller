@@ -176,6 +176,7 @@ module rpc_phy #(
 
   logic clk_90, clk_270;
 
+`ifndef FPGA_EMUL
   generic_delay_D5_O1_5P000_CG0 i_delay_line_clk_90(
           .clk_i   (clk_0_i),
           .enable_i(1'b1),
@@ -183,14 +184,26 @@ module rpc_phy #(
           .clk_o   (clk_90)
   );
 
+`else
+  xilinx_phase_shift_90 i_delay_line_clk_90 (
+     .reset(~rst_ni),
+     .clk_in1(clk_0_i),
+     .clk_out1(clk_90),
+     .locked()
+    );
+`endif
+
+  // Inverting clk90, clk90_n <=> clk270
   tc_clk_inverter i_tc_clk_inverter_clk_270(
     .clk_i(clk_90),
     .clk_o(clk_270)
   );
 
+  // propagate clk90 and clk90_n
   assign clk_o = clk_90;
   assign clk_no = clk_270;
 
+  // get dqs and dqs_n and propagate
   tc_clk_gating i_tc_clk_gating_dqs_o(
      .clk_i(clk_90),
      .en_i(dqs_cg_en),
@@ -322,6 +335,7 @@ module rpc_phy #(
 
     logic dqs_i_delay, dqs_ni_delay;
 
+`ifndef FPGA_EMUL
     generic_delay_D5_O1_5P000_CG0 i_delay_line_dqs_i(
             .clk_i   (dqs_i),
             .enable_i(1'b1),
@@ -335,8 +349,23 @@ module rpc_phy #(
             .delay_i (phy_dqs_ni_delay_cfg_i),
             .clk_o   (dqs_ni_delay)
     );
+`else // !`ifndef FPGA_MAP
+    xilinx_phase_shift_90 i_delay_line_dqs
+      (
+       .reset(~rst_ni),
+       .clk_in1(dqs_i),
+       .clk_out1(dqs_i_delay),
+       .locked()
+      );
 
-
+    xilinx_phase_shift_90 i_delay_line_dqsn
+      (
+       .reset(~rst_ni),
+       .clk_in1(dqs_ni),
+       .clk_out1(dqs_ni_delay),
+       .locked()
+      );
+`endif
 
     //////////////////////////////////////////////////
     ////////// Input DDR to Internal SDR  ////////////
