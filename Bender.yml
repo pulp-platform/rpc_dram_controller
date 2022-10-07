@@ -61,3 +61,7 @@ sources:
        - src/controller_src/rpc_controller_synth_wrap.sv
        - src/interface_src/rpc_interface_synth_wrap.sv
        - src/rpc_synth_wrap.sv
+
+  - target: test
+    files:
+      - src/controller_src/rpc_dram_phy/generic_delay_D5_O1_5P000_CG0.behav.sv
