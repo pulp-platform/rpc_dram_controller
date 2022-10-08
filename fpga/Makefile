@@ -2,10 +2,11 @@ PROJECT ?= rpc
 BOARD ?= genesys2
 XILINX_PART ?= xc7k325tffg900-2
 XILINX_BOARD ?= digilentinc.com:genesys2:part0:1.1
+BENDER ?= bender
 
 out := out
-bit := $(out)/rpc_controller_top_xilinx.bit
-mcs := $(out)/neo_top_xilinx.mcs
+bit := $(out)/rpc_top_xilinx.bit
+mcs := $(out)/rpc_top_xilinx.mcs
 
 
 VIVADOENV ?=	PROJECT=$(PROJECT)				\
@@ -31,7 +32,7 @@ $(bit) : $(ips)
 	$(VIVADOENV) $(VIVADO) vivado $(VIVADOFLAGS) -source scripts/run.tcl
 	cp $(PROJECT).runs/impl_1/$(PROJECT)* ./$(out)
 
-$(ips):
+$(ips): fpga-srcs
 	@echo "Generating IP $(basename $@)"
 	cd $(ip-dir)/$(basename $@) && $(MAKE) clean && $(VIVADOENV) VIVADO=$(VIVADO) $(MAKE)
 	cp $(ip-dir)/$(basename $@)/$(basename $@).srcs/sources_1/ip/$(basename $@)/$@ $@
@@ -44,6 +45,10 @@ gui:
 program: $(bit)
 	@echo "Programming board $(BOARD) ($(XILINX_PART))"
 	$(VIVADOENV) $(VIVADO) vivado $(VIVADOFLAGS) -source scripts/program.tcl
+
+fpga-srcs: scripts/add_sources.tcl
+scripts/add_sources.tcl:
+	$(BENDER) script vivado -t rtl -t fpga > $@
 
 clean:
 	rm -rf *.sim *.log *.jou *.str *.mif *.xci *.xpr $(out) $(PROJECT).cache $(PROJECT).hw $(PROJECT).ip_user_files

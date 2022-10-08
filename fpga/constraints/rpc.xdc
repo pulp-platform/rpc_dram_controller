@@ -7,96 +7,105 @@ set_property CLOCK_DEDICATED_ROUTE ANY_CMT_COLUMN [get_nets clkp_i]
 # rst_n
 set_max_delay -from [get_ports rst_ni] [expr 0.7*5]
 
-## in/out constraints
+# Constrain clock domain crossings
+# cdc_fifo_gray
+set async_pins [get_pins "i_rpc_fpga_top/i_rpc_wrap/i_rpc/i_rpc_controller/i_rpc_phy_controller/i_rpc_phy/i_cdc_fifo/*/*async*"]
+set_false_path -through ${async_pins}
+
+# clock domain crossing
+set_false_path -from [get_clocks clkfbout_xilinx_phase_shift_90] -to [get_clocks rpc_clk]
+set_false_path -from [get_clocks rpc_clk] -to [get_clocks clkfbout_xilinx_phase_shift_90]
+
+## FMC mapping
 
 ### CS_N
-# CS_N - FPGA B23 - FMC  H19
-set_property -dict {PACKAGE_PIN B23 IOSTANDARD LVCMOS12} [get_ports rpc_csn]
+# CS_N - FPGA J11 - FMC  K31
+set_property -dict {PACKAGE_PIN J11 IOSTANDARD LVCMOS12} [get_ports rpc_cs_no]
 
 ### STB
-# STB - FPGA A23 - FMC  H20
-set_property -dict {PACKAGE_PIN A23 IOSTANDARD LVCMOS12} [get_ports rpc_stb]
+# STB - FPGA H12 - FMC  K35
+set_property -dict {PACKAGE_PIN H12 IOSTANDARD LVCMOS12} [get_ports rpc_stb_o]
 
 ### CLK
-# CLK - FPGA E23 - FMC  G18
-set_property -dict {PACKAGE_PIN E23 IOSTANDARD LVCMOS12} [get_ports rpc_clk]
+# CLK - FPGA D12 - FMC  K37
+set_property -dict {PACKAGE_PIN D12 IOSTANDARD LVCMOS12} [get_ports rpc_clk_o]
 
 ### CLK_N
-# CLK_N - FPGA D23 - FMC  G19
-set_property -dict {PACKAGE_PIN D23 IOSTANDARD LVCMOS12} [get_ports rpc_clkn]
+# CLK_N - FPGA D13 - FMC  K38
+set_property -dict {PACKAGE_PIN D13 IOSTANDARD LVCMOS12} [get_ports rpc_clk_no]
 
 ### DQS
-# DQS - FPGA F25 - FMC  H13
-set_property -dict {PACKAGE_PIN F25 IOSTANDARD LVCMOS12} [get_ports rpc_dqs]
+# DQS - FPGA G13 - FMC  K25
+set_property -dict {PACKAGE_PIN G13 IOSTANDARD LVCMOS12} [get_ports rpc_dqs]
 
 ### DQS_N
-# DQS_N - FPGA E25 - FMC  H14
-set_property -dict {PACKAGE_PIN E25 IOSTANDARD LVCMOS12} [get_ports rpc_dqsn]
+# DQS_N - FPGA F13 - FMC  K26
+set_property -dict {PACKAGE_PIN F13 IOSTANDARD LVCMOS12} [get_ports rpc_dqsn]
 
 ### DB_0
-# DB_0 - FPGA E24 - FMC  D17
-set_property -dict {PACKAGE_PIN E24 IOSTANDARD LVCMOS12} [get_ports rpc_db0]
+# DB_0 - FPGA B12 - FMC  E31
+set_property -dict {PACKAGE_PIN B12 IOSTANDARD LVCMOS12} [get_ports rpc_db0]
 
 ### DB_1
-# DB_1 - FPGA D24 - FMC  D18
-set_property -dict {PACKAGE_PIN D24 IOSTANDARD LVCMOS12} [get_ports rpc_db1]
+# DB_1 - FPGA C15 - FMC  E27
+set_property -dict {PACKAGE_PIN C15 IOSTANDARD LVCMOS12} [get_ports rpc_db1]
 
 ### DB_2
-# DB_2 - FPGA F26 - FMC  G15
-set_property -dict {PACKAGE_PIN F26 IOSTANDARD LVCMOS12} [get_ports rpc_db2]
+# DB_2 - FPGA L12 - FMC  J33
+set_property -dict {PACKAGE_PIN L12 IOSTANDARD LVCMOS12} [get_ports rpc_db2]
 
 ### DB_3
-# DB_3 - FPGA E26 - FMC  G16
-set_property -dict {PACKAGE_PIN E26 IOSTANDARD LVCMOS12} [get_ports rpc_db3]
+# DB_3 - FPGA C12 - FMC  E30
+set_property -dict {PACKAGE_PIN C12 IOSTANDARD LVCMOS12} [get_ports rpc_db3]
 
 ### DB_4
-# DB_4 - FPGA B27 - FMC  C14
-set_property -dict {PACKAGE_PIN B27 IOSTANDARD LVCMOS12} [get_ports rpc_db4]
+# DB_4 - FPGA C11 - FMC  J31
+set_property -dict {PACKAGE_PIN C11 IOSTANDARD LVCMOS12} [get_ports rpc_db4]
 
 ### DB_5
-# DB_5 - FPGA A27 - FMC  C15
-set_property -dict {PACKAGE_PIN A27 IOSTANDARD LVCMOS12} [get_ports rpc_db5]
+# DB_5 - FPGA D11 - FMC  J30
+set_property -dict {PACKAGE_PIN D11 IOSTANDARD LVCMOS12} [get_ports rpc_db5]
 
 ### DB_6
-# DB_6 - FPGA H21 - FMC  H22
-set_property -dict {PACKAGE_PIN H21 IOSTANDARD LVCMOS12} [get_ports rpc_db6]
+# DB_6 - FPGA A13 - FMC  J28
+set_property -dict {PACKAGE_PIN A13 IOSTANDARD LVCMOS12} [get_ports rpc_db6]
 
 ### DB_7
-# DB_7 - FPGA H22 - FMC  H23
-set_property -dict {PACKAGE_PIN H22 IOSTANDARD LVCMOS12} [get_ports rpc_db7]
+# DB_7 - FPGA J12 - FMC  K32
+set_property -dict {PACKAGE_PIN J12 IOSTANDARD LVCMOS12} [get_ports rpc_db7]
 
 ### DB_8
-# DB_8 - FPGA G22 - FMC  G21
-set_property -dict {PACKAGE_PIN G22 IOSTANDARD LVCMOS12} [get_ports rpc_db8]
+# DB_8 - FPGA E11 - FMC  E34
+set_property -dict {PACKAGE_PIN E11 IOSTANDARD LVCMOS12} [get_ports rpc_db8]
 
 ### DB_9
-# DB_9 - FPGA F22 - FMC  G22
-set_property -dict {PACKAGE_PIN F22 IOSTANDARD LVCMOS12} [get_ports rpc_db9]
+# DB_9 - FPGA H11 - FMC  K34
+set_property -dict {PACKAGE_PIN H11 IOSTANDARD LVCMOS12} [get_ports rpc_db9]
 
 ### DB_10
-# DB_10 - FPGA D22 - FMC  G27
-set_property -dict {PACKAGE_PIN D22 IOSTANDARD LVCMOS12} [get_ports rpc_dba]
+# DB_10 - FPGA L13 - FMC  J34
+set_property -dict {PACKAGE_PIN L13 IOSTANDARD LVCMOS12} [get_ports rpc_dba]
 
 ### DB_11
-# DB_11 - FPGA C22 - FMC  G28
-set_property -dict {PACKAGE_PIN C22 IOSTANDARD LVCMOS12} [get_ports rpc_dbb]
+# DB_11 - FPGA F11 - FMC  E33
+set_property -dict {PACKAGE_PIN F11 IOSTANDARD LVCMOS12} [get_ports rpc_dbb]
 
 ### DB_12
-# DB_12 - FPGA F21 - FMC  D20
-set_property -dict {PACKAGE_PIN F21 IOSTANDARD LVCMOS12} [get_ports rpc_dbc]
+# DB_12 - FPGA C14 - FMC  E37
+set_property -dict {PACKAGE_PIN C14 IOSTANDARD LVCMOS12} [get_ports rpc_dbc]
 
 ### DB_13
-# DB_13 - FPGA E21 - FMC  D21
-set_property -dict {PACKAGE_PIN E21 IOSTANDARD LVCMOS12} [get_ports rpc_dbd]
+# DB_13 - FPGA D14 - FMC  E36
+set_property -dict {PACKAGE_PIN D14 IOSTANDARD LVCMOS12} [get_ports rpc_dbd]
 
 ### DB_14
-# DB_14 - FPGA D17 - FMC  C22
-set_property -dict {PACKAGE_PIN D17 IOSTANDARD LVCMOS12} [get_ports rpc_dbe]
+# DB_14 - FPGA E15 - FMC  J37
+set_property -dict {PACKAGE_PIN E15 IOSTANDARD LVCMOS12} [get_ports rpc_dbe]
 
 ### DB_15
-# DB_15 - FPGA D18 - FMC  C23
-set_property -dict {PACKAGE_PIN D18 IOSTANDARD LVCMOS12} [get_ports rpc_dbf]
+# DB_15 - FPGA E14 - FMC  J36
+set_property -dict {PACKAGE_PIN E14 IOSTANDARD LVCMOS12} [get_ports rpc_dbf]
 
 # TODO @ale: fix this hack for clock cells placement on dqs/dqsn
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets i_rpc_wrap/i_iobuf_rpc/i_dqs_iobuf/O]
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets i_rpc_wrap/i_iobuf_rpc/i_dqsn_iobuf/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets i_rpc_fpga_top/i_iobuf_rpc/i_dqs_iobuf/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets i_rpc_fpga_top/i_iobuf_rpc/i_dqsn_iobuf/O]

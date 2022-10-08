@@ -30,24 +30,26 @@ read_ip { \
       "xilinx/xilinx_phase_shift_90/xilinx_phase_shift_90.srcs/sources_1/ip/xilinx_phase_shift_90/xilinx_phase_shift_90.xci" \
 }
 
-#set_property include_dirs { "src/axi_sd_bridge/include" "../src/common_cells/include" } [current_fileset]
-
+# Add source files
 source scripts/add_sources.tcl
 
+# Set top
 set_property top ${project}_xilinx [current_fileset]
 
-# Set Verilog Defines.
+# Set Verilog Defines
 set DEFINES "FPGA_EMUL=1"
 set_property verilog_define $DEFINES [current_fileset]
 
 update_compile_order -fileset sources_1
 
+# Add costraints
 add_files -fileset constrs_1 -norecurse constraints/$project.xdc
 
+# Make XPM memories visible by the tool
 set_property XPM_LIBRARIES XPM_MEMORY [current_project]
 
+# Synthesize
 synth_design -rtl -name rtl_1
-
 set_property STEPS.SYNTH_DESIGN.ARGS.RETIMING true [get_runs synth_1]
 
 launch_runs synth_1
@@ -68,10 +70,12 @@ report_clock_interaction                                                -file re
 set_property "steps.place_design.args.directive" "RuntimeOptimized" [get_runs impl_1]
 set_property "steps.route_design.args.directive" "RuntimeOptimized" [get_runs impl_1]
 
+# Implement
 launch_runs impl_1
 wait_on_run impl_1
 
 # write bitstream
+# hack: pre-hook write bitstream step by excluding IO placement errors on unwanted signals (AXI ports etc)
 set_property STEPS.WRITE_BITSTREAM.TCL.PRE {./constraints/drc_unmapped.tcl} [get_runs impl_1]
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1

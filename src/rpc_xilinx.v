@@ -92,7 +92,7 @@ module rpc_xilinx (
     inout  wire rpc_dbf
 );
 
-  rpc_fpga_top i_rpc_wrap (
+  rpc_fpga_top i_rpc_fpga_top (
 
     // common signals
     .clkp_i                  (clkp_i),
