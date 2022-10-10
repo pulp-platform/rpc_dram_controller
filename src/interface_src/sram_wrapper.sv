@@ -108,8 +108,10 @@ module sram_wrapper #(
 
 	`else
 		tc_sram #(
-			  .NumWords		( 256  ), 		
-			  .DataWidth 	( 256 ),
+			.NumWords(SramNumWords),
+			.DataWidth(DramDataWidth),	   	
+//			  .NumWords		( 256  ), 		
+//			  .DataWidth 	( 256 ),
 			  .ByteWidth    ( 256 ),  		   	
 			  .NumPorts		( 32'd2    ),    	
 			  .Latency		( 32'b1     ),    	

@@ -19,19 +19,19 @@
 // External interface:
 //         DRAM Interface ports connected to IO PAD
 module rpc #(
-    parameter int PHY_CLOCK_PERIOD = 5,
+    parameter  int PHY_CLOCK_PERIOD = 5,
 
     //axi data, id, address bus width
     //defined by wrapper
-    parameter int unsigned AxiDataWidth = 64,
-    parameter int unsigned AxiAddrWidth = 48,
-    parameter int unsigned AxiIdWidth   = 6,
-    parameter int unsigned AxiUserWidth = 1,
+    parameter  int unsigned AxiDataWidth = 64,
+    parameter  int unsigned AxiAddrWidth = 48,
+    parameter  int unsigned AxiIdWidth   = 6,
+    parameter  int unsigned AxiUserWidth = 1,
     //Master port data width
-    parameter int unsigned DramDataWidth = 256,
-    parameter int unsigned DramLenWidth  = 6,
-    parameter int unsigned DramAddrWidth = 20,
-    parameter int unsigned BufferDepth   = 4,
+    parameter  int unsigned DramDataWidth = 256,
+    parameter  int unsigned DramLenWidth  = 6,
+    parameter  int unsigned DramAddrWidth = 20,
+    localparam int unsigned BufferDepth   = 1,
     
     //axi port type, passed by wrapper
     //comply with data, id address bus width

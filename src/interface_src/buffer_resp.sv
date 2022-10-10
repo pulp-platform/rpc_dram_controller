@@ -87,7 +87,7 @@ module buffer_resp #(
     //no user defined currently
     assign b_buffer_i.user = '0;     
     //No need for ID, cause transactions carried out in order             
-    // assign b_buffer_i.id   = '0;                   
+    assign b_buffer_i.id   = '0;                   
     //When write transaction sent to downstream, push B response back to B buffer
     assign b_buf_valid_i   =  cmd_valid_i && cmd_ready_i 
                               && trx_is_write_i ;   
@@ -126,7 +126,7 @@ module buffer_resp #(
     logic [AXI_ID_WIDTH-1:0] b_counter_id;
 
     assign counter_delta = 'b1 << (AXI_ID_WIDTH - PreIdWidth);
-    assign b_buffer_i.id = b_counter_id;
+//    assign b_buffer_i.id = b_counter_id;
 
     delta_counter #(
         .WIDTH      (AXI_ID_WIDTH)
