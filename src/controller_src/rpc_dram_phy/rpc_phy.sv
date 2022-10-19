@@ -241,18 +241,21 @@ module rpc_phy #(
     // db_int is a 32 bit signal used to send the data to be send out within a CLK cycle
     // The upper 16 bit is the data to be sent on positive output clk edge
     // The lower 16 bit is the data to be sent on negative output clk edge
-    // clk_mux select whether to transmit upper or lower 16 bit based on output clk 
-    generate
-      for (genvar i = 0; i < DRAM_DB_WIDTH; i++) begin
-        tc_clk_mux2 i_tc_clk_mux2(
-          .clk0_i(db_int[i]),
-          .clk1_i(db_int[DRAM_DB_WIDTH + i]),
-          .clk_sel_i(clk_0_i),
-          .clk_o(db_o[i])
-        );		
-      end
-    endgenerate
-
+    // clk_mux select whether to transmit upper or lower 16 bit based on output clk
+`ifndef FPGA_EMUL
+    for (genvar i = 0; i < DRAM_DB_WIDTH; i++) begin
+      tc_clk_mux2 i_tc_clk_mux2(
+        .clk0_i(db_int[i]),
+        .clk1_i(db_int[DRAM_DB_WIDTH + i]),
+        .clk_sel_i(clk_0_i),
+        .clk_o(db_o[i])
+      );
+    end
+`else
+    for (genvar i = 0; i < DRAM_DB_WIDTH; i++) begin
+        assign db_o[i] = (clk_0_i) ? db_int[DRAM_DB_WIDTH + i] : db_int[i];
+    end
+`endif
 
     //////////////////////////////////////////////////
     ////////// Data Path Pipeline  ///////////////////
@@ -358,13 +361,14 @@ module rpc_phy #(
        .locked()
       );
 
-    xilinx_phase_shift_90 i_delay_line_dqsn
-      (
-       .reset(~rst_ni),
-       .clk_in1(dqs_ni),
-       .clk_out1(dqs_ni_delay),
-       .locked()
-      );
+//    xilinx_phase_shift_90 i_delay_line_dqsn
+//      (
+//       .reset(~rst_ni),
+//       .clk_in1(dqs_ni),
+//       .clk_out1(dqs_ni_delay),
+//       .locked()
+//      );
+    assign dqs_ni_delay = dqs_ni;
 `endif
 
     //////////////////////////////////////////////////
@@ -407,7 +411,7 @@ module rpc_phy #(
       ) i_cdc_fifo (
             // External signal coming from the RPC DRAM
             .src_rst_ni (rst_ni),              
-            .src_clk_i  (dqs_ni_delay),        // dqs_i_delay is the DQS,DQS# diff pair coming from RPC DRAM
+            .src_clk_i  (dqs_i_delay),        // dqs_i_delay is the DQS,DQS# diff pair coming from RPC DRAM
             .src_data_i (cdc_src_data),       // read_reg_q is the 32bit signal containing both DDR positive and negative edge input data
             .src_valid_i(cdc_src_valid),
             .src_ready_o(src_ready_o),
