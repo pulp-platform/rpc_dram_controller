@@ -19,14 +19,13 @@ module generic_delay_D5_O1_5P000_CG0 (
 );
 
 
-  timeunit 1ps;
-  timeprecision 1fs;
+  timeunit 1ps; timeprecision 1fs;
 
   logic enable_latched;
   logic clk;
-  
+
   assign clk = clk_i;
 
-  always @(clk) clk_o[0] <= #(real'(delay_i)*5.000ns/31) clk;
+  always @(clk) clk_o[0] <= #(real'(delay_i) * 5.000ns / 31) clk;
 
 endmodule

@@ -7,13 +7,13 @@
 // Chen Jinfan <jinfchen@student.ethz.ch>
 
 module tristate_shim (
-    input  wire out_ena_i,
-    input  wire out_i,
-    output wire in_o,
-    inout  wire line_io
+  input  wire out_ena_i,
+  input  wire out_i,
+  output wire in_o,
+  inout  wire line_io
 );
 
-    assign line_io = out_ena_i ? out_i : 1'bz;
-    assign in_o    = out_ena_i ? 1'bx  : line_io;
+  assign line_io = out_ena_i ? out_i : 1'bz;
+  assign in_o    = out_ena_i ? 1'bx : line_io;
 
 endmodule : tristate_shim
