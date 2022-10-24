@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+BENDER ?= bender
+
 TARGET =? .
 TARGET_ABS    = $(abspath $(lastword $(TARGET)))
 REPORT        ?= 0
@@ -79,3 +81,7 @@ verible-update-interactive:
 verible-clean:
 	$(RM) -r $(ROOT_DIR)/util/verible/rpt
 
+# vivado source files
+gen-vivado-srcs: fpga/scripts/add_sources.tcl
+fpga/scripts/add_sources.tcl:
+	$(BENDER) script vivado -t rtl -t fpga > $@
