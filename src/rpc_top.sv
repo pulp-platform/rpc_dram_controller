@@ -18,7 +18,7 @@
 //
 // External interface:
 //         DRAM Interface ports connected to IO PAD
-module rpc #(
+module rpc_top #(
   parameter int PHY_CLOCK_PERIOD = 5,
 
   //axi data, id, address bus width

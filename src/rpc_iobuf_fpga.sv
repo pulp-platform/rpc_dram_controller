@@ -17,24 +17,35 @@
 // specific language governing permissions and limitations under the License.
 //-----------------------------------------------------------------------------
 
-module iobuf_rpc_fpga (
+module rpc_iobuf (
 
-  // OUTPUT ENABLE SIGNALS TO THE PADS
   input logic  oe_dqs_i,
-  input logic  oe_dqsn_i,
   input logic  oe_db_i,
 
-  // INPUTS SIGNALS FROM THE PADS
+  input logic  ie_dqs_i,
+  input logic  ie_db_i,
+
   output logic in_dqs_o,
   output logic in_dqsn_o,
-  input logic [15:0]  in_db_o,
+  input  logic [15:0] in_db_o,
 
-  // OUTPUT SIGNALS TO THE PADS
   input logic  out_dqs_i,
   input logic  out_dqsn_i,
   input logic  [15:0] out_db_i,
 
-  // PMB PADS INOUT WIRES
+  input logic  out_clk_i,
+  input logic  out_clkn_i,
+  input logic  out_stb_i,
+  input logic  out_csn_i,
+
+  input logic  pd_en_dqs_i,
+  input logic  pd_en_db_i,
+
+  inout wire   clk,
+  inout wire   clkn,
+  inout wire   stb,
+  inout wire   csn,
+
   inout wire   dqs,
   inout wire   dqsn,
   inout wire   db0,
@@ -55,6 +66,18 @@ module iobuf_rpc_fpga (
   inout wire   dbf
 );
 
+  // tie-off unused inputs, leave outputs dangling
+  assign ie_dqs_i = '0;   
+  assign ie_db_i = '0;
+  assign pd_en_dqs_i = '0;   
+  assign pd_en_db_i = '0;
+
+  // feedthrough the output signals clk, clkn, stb, csn 
+  assign clk = out_clk_i;  
+  assign clkn = out_clkn_i;  
+  assign stb = out_stb_i;  
+  assign csn = out_csn_i;  
+       
   // dqs, dqsn
   IOBUF #(
     .DRIVE       (12),
@@ -65,7 +88,7 @@ module iobuf_rpc_fpga (
     .O (in_dqsn_o),
     .IO(dqsn),
     .I (out_dqsn_i),
-    .T (~oe_dqsn_i)
+    .T (~oe_dqs_i)
   );
 
   IOBUF #(

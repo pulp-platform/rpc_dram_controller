@@ -9,7 +9,7 @@ set_max_delay -from [get_ports rst_ni] [expr 0.7*5]
 
 # Constrain clock domain crossings
 # cdc_fifo_gray
-set async_pins [get_pins "i_rpc_fpga_top/i_rpc_wrap/i_rpc/i_rpc_controller/i_rpc_phy_controller/i_rpc_phy/i_cdc_fifo/*/*async*"]
+set async_pins [get_pins "i_rpc_top/i_rpc_controller/i_rpc_phy_controller/i_rpc_phy/i_cdc_fifo/*/*async*"]
 set_false_path -through ${async_pins}
 
 # clock domain crossing

@@ -8,7 +8,7 @@
 // The wrapper used to perform the context-free independent synthesis of rpc_controller_top
 // Do not use this module for other purpose!!
 
-module rpc_controller_synth_wrap #(
+module rpc_controller_synth_top #(
   parameter int unsigned PHY_CLOCK_PERIOD = 5,
 
   parameter  int unsigned REG_ADDR_WIDTH   = 5,

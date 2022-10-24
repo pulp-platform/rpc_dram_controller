@@ -8,7 +8,7 @@
 `include "axi/assign.svh"
 `include "axi/typedef.svh"
 
-module rpc_interface_synth_wrap #(
+module rpc_interface_synth_top #(
   parameter int unsigned AxiIdWidth    = 6,
   parameter int unsigned AxiAddrWidth  = 48,
   parameter int unsigned AxiDataWidth  = 64,

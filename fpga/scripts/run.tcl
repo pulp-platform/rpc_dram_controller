@@ -34,7 +34,7 @@ read_ip { \
 source scripts/add_sources.tcl
 
 # Set top
-set_property top ${project}_xilinx [current_fileset]
+set_property top ${project}_wrapper [current_fileset]
 
 # Set Verilog Defines
 set DEFINES "FPGA_EMUL=1"

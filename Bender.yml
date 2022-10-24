@@ -40,7 +40,7 @@ sources:
     - src/buffer_resp.sv
     - src/sram_wrapper.sv
     - src/rpc_interface.sv
-    - src/rpc_interface_synth_wrap.sv
+    - src/rpc_interface_synth_top.sv
     - src/axi_parallelizer.sv
     - src/tristate_shim.sv
     - src/rpc_cmd_decoder.sv
@@ -54,20 +54,18 @@ sources:
     - src/config_reg.sv
     - src/rpc_config_manager.sv
     - src/rpc_controller.sv
-    - src/rpc.sv
+    - src/rpc_top.sv
 
-  - target: all(fpga,xilinx)
+  - target: all(any(fpga,xilinx, tech_cells_generic_include_xilinx_xpm))
     files:
+       - src/rpc_iobuf_fpga.sv
+       - src/rpc_wrapper.sv
 
-       - src/iobuf_rpc_fpga.sv
-       - src/rpc_fpga_top.sv
-       - src/rpc_xilinx.v
-
-  - target: synthesis
+  - target: all(synthesis, asic)
     files:
-       - src/rpc_controller_synth_wrap.sv
-       - src/rpc_interface_synth_wrap.sv
-       - src/rpc_synth_wrap.sv
+       - src/rpc_controller_synth_top.sv
+       - src/rpc_interface_synth_top.sv
+       - src/rpc_iobuf_tsmc65.sv
 
   - target: test
     files:
