@@ -17,8 +17,6 @@ module rpc_phy_controller #(
 
   // RPC DRAM DB Bus Width
   parameter DRAM_DB_WIDTH   = 16,
-  // DQS/DQS# delay line config port width
-  parameter DELAY_CFG_WIDTH = 5,
 
   // axi interface data path
   parameter type axi_cmd_req_t = logic,
@@ -36,6 +34,7 @@ module rpc_phy_controller #(
   // ----------------------------------------------------------------------------------------------
 
   input  logic                                          clk_i,
+  input  logic                                          clk90_i,
   input  logic                                          rst_ni,
 
   // ----------------------------------------------------------------------------------------------
@@ -76,11 +75,6 @@ module rpc_phy_controller #(
   input   logic[63:0]                                   write_mask_i,
   output  phy_rsp_t                                     axi_data_rsp_o,
 
-  // Phy  input DQS/DQS# Strobe delay configuration port
-  input   logic [DELAY_CFG_WIDTH-1:0]                   phy_clk_90_delay_cfg_i,
-  input   logic [DELAY_CFG_WIDTH-1:0]                   phy_dqs_i_delay_cfg_i,
-  input   logic [DELAY_CFG_WIDTH-1:0]                   phy_dqs_ni_delay_cfg_i,
-
   // Phy timing fsm configuration signal
   input rpc_config_path_pkg::timing_cfg_reg_t           phy_timing_cfg_i,
 
@@ -116,7 +110,9 @@ module rpc_phy_controller #(
   input  logic [DRAM_DB_WIDTH-1 : 0]                    phy_db_i,
   output logic                                          phy_db_oe_o,
   output logic                                          phy_db_ie_o,
-  output logic                                          phy_db_pd_en_o
+  output logic                                          phy_db_pd_en_o,
+
+  input  logic                                          phy_dqs_delay_i
 );
 
 
@@ -202,17 +198,12 @@ module rpc_phy_controller #(
     .DRAM_CMD_WIDTH (DRAM_CMD_WIDTH),
     .DRAM_DB_WIDTH  (DRAM_DB_WIDTH),
     .DRAM_WORD_WIDTH(256),
-    .DRAM_MASK_WIDTH(64),
-    .DELAY_CFG_WIDTH(DELAY_CFG_WIDTH)
-
+    .DRAM_MASK_WIDTH(64)
   ) i_rpc_phy (
     //---------------------------Sytem Input Clock and reset --------------------------
-    .clk_0_i(clk_i),  //see clock generation part
+    .clk_0_i(clk_i),  
+    .clk_90_i(clk90_i),
     .rst_ni (rst_ni),
-
-    .phy_clk_90_delay_cfg_i(phy_clk_90_delay_cfg_i),
-    .phy_dqs_i_delay_cfg_i (phy_dqs_i_delay_cfg_i),
-    .phy_dqs_ni_delay_cfg_i(phy_dqs_ni_delay_cfg_i),
 
     .phy_timing_cfg_i(phy_timing_cfg_i),
 
@@ -265,8 +256,9 @@ module rpc_phy_controller #(
     .db_i      (phy_db_i),
     .db_oe_o   (phy_db_oe_o),
     .db_ie_o   (phy_db_ie_o),
-    .db_pd_en_o(phy_db_pd_en_o)
+    .db_pd_en_o(phy_db_pd_en_o),
 
+    .phy_dqs_delay_i
   );
 
 

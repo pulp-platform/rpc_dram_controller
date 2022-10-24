@@ -48,6 +48,7 @@ module rpc_top #(
   // ----------------------------clock and reset input  -------------------------------------------
   // ----------------------------------------------------------------------------------------------
   input logic                         clk_i,
+  input logic                         clk90_i,
   input logic                         rst_ni,
 
   // ----------------------------------------------------------------------------------------------
@@ -88,7 +89,13 @@ module rpc_top #(
   input   logic [16-1 : 0]            phy_db_i,
   output  logic                       phy_db_oe_o,
   output  logic                       phy_db_ie_o,
-  output  logic                       phy_db_pd_en_o
+  output  logic                       phy_db_pd_en_o,
+
+  output  logic                       phy_clk_90_delay_cfg_o,
+  output  logic                       phy_dqs_delay_cfg_o,
+  output  logic                       phy_dqsn_delay_cfg_o,
+
+  input   logic                       phy_dqs_delay_i
 );
 
 
@@ -152,6 +159,7 @@ module rpc_top #(
 
     // ---------- lock and reset input ----------
     .clk_i (clk_i),
+    .clk90_i,
     .rst_ni(rst_ni),
 
     // ---------- upstream reg bus interface -------
@@ -187,7 +195,13 @@ module rpc_top #(
     .phy_db_i      (phy_db_i),
     .phy_db_oe_o   (phy_db_oe_o),
     .phy_db_ie_o   (phy_db_ie_o),
-    .phy_db_pd_en_o(phy_db_pd_en_o)
+    .phy_db_pd_en_o(phy_db_pd_en_o),
+
+    .phy_clk_90_delay_cfg_o,
+    .phy_dqs_delay_cfg_o,
+    .phy_dqsn_delay_cfg_o,
+
+    .phy_dqs_delay_i
   );
 
 endmodule

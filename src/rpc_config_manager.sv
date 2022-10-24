@@ -72,8 +72,8 @@ module rpc_config_manager #(
   // ----------------------------config_reg -> PHY ------------------------------------------------
   // ----------------------------------------------------------------------------------------------
   output logic [DELAY_CFG_WIDTH-1:0]  phy_clk_90_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqs_i_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqs_ni_delay_cfg_o,
+  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqs_delay_cfg_o,
+  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqsn_delay_cfg_o,
 
   output rpc_config_path_pkg::timing_cfg_reg_t          phy_timing_cfg_o
 
@@ -146,8 +146,8 @@ module rpc_config_manager #(
 
     // config_reg -> phy
     .phy_clk_90_delay_cfg_o(phy_clk_90_delay_cfg_o),
-    .phy_dqs_i_delay_cfg_o (phy_dqs_i_delay_cfg_o),
-    .phy_dqs_ni_delay_cfg_o(phy_dqs_ni_delay_cfg_o),
+    .phy_dqs_i_delay_cfg_o (phy_dqs_delay_cfg_o),
+    .phy_dqs_ni_delay_cfg_o(phy_dqsn_delay_cfg_o),
 
     .phy_timing_cfg_o(phy_timing_cfg_o),
 

@@ -107,6 +107,9 @@ module rpc_wrapper (
 );
 
   logic rpc_clk_in;
+  logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_clk_90_delay_cfg, phy_dqs_delay_cfg;
+
+  // clock generation
 
 `ifdef FPGA_EMUL
   // differential to single ended clock conversion
@@ -117,15 +120,56 @@ module rpc_wrapper (
   ) i_sysclk_iobuf (
     .I (clkp_i),
     .IB(clkn_i),
-    .O (rpc_clk_in)
+    .O (rpc_clk0_in)
+  );
+
+  // clock90 generation
+  xilinx_phase_shift_90 i_delay_line_clk_90 (
+    .reset   (~rst_ni),
+    .clk_in1 (rpc_clk0_in),
+    .clk_out1(rpc_clk90_in),
+    .locked  ()
   );
 `else // !`ifdef FPGA_EMUL
-    assign rpc_clk_in = clk_i;
+  assign rpc_clk0_in = clk_i;
+
+  // clk90 generation
+  generic_delay_D5_O1_5P000_CG0 i_delay_line_clk_90 (
+    .clk_i   (rpc_clk0_in),
+    .enable_i(1'b1),
+    .delay_i (phy_clk_90_delay_cfg),
+    .clk_o   (rpc_clk90_in)
+  );
 `endif
 
+
+  // DQS delay generation
+
+  // The delay_line cell delays the input clk based on a configurable delay cfg_delay
+  // If cfg_delay = 5'd31, the clk_o will be a 5ns delayed version of clk_i
+  // The delay is used to shift DQS input by 90 degree so that it sits at the center of data window
+
   // rpc iobuf
-  logic out_dqs, out_dqsn, in_dqs, in_dqsn, oe_dqs, ie_dqs, oe_db, pd_en_dqs, pd_en_db;
+  logic out_dqs, out_dqsn, in_dqs, in_dqsn, oe_dqs, ie_dqs, oe_db, pd_en_dqs, pd_en_db, dqs_delay;
   logic [15:0] out_db, in_db;
+
+`ifndef FPGA_EMUL
+  generic_delay_D5_O1_5P000_CG0 i_delay_line_dqs_i (
+    .clk_i   (in_dqs),
+    .enable_i(1'b1),
+    .delay_i (phy_dqs_delay_cfg),
+    .clk_o   (dqs_delay)
+  );
+`else  // !`ifndef FPGA_MAP
+  xilinx_phase_shift_90 i_delay_line_dqs (
+    .reset   (~rst_ni),
+    .clk_in1 (in_dqs),
+    .clk_out1(dqs_delay),
+    .locked  ()
+  );
+
+  //assign dqs_ni_delay = in_dqsn;
+`endif
 
   rpc_iobuf i_iobuf_rpc (
     // output enable
@@ -238,7 +282,8 @@ module rpc_wrapper (
 
   ) i_rpc_top (
     // clk and rst signal
-    .clk_i (rpc_clk_in),
+    .clk_i  (rpc_clk0_in),
+    .clk90_i(rpc_clk90_in),
     .rst_ni(rst_ni),
 
     // Axi Interface
@@ -265,7 +310,14 @@ module rpc_wrapper (
     .phy_db_i            (in_db),
     .phy_db_oe_o         (oe_db),
     .phy_db_ie_o         (ie_db),
-    .phy_db_pd_en_o      (pd_en_db)
+    .phy_db_pd_en_o      (pd_en_db),
+
+    .phy_clk_90_delay_cfg_o (phy_clk_90_delay_cfg),
+    .phy_dqs_delay_cfg_o    (phy_dqs_delay_cfg),
+    .phy_dqsn_delay_cfg_o   (), // TODO: remove this signal
+
+    .phy_dqs_delay_i        (dqs_delay)
+
   );
 
   // pack/explode AXI req/resp signals

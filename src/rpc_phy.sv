@@ -13,21 +13,17 @@ module rpc_phy #(
   parameter int DRAM_CMD_WIDTH = 32,
   parameter int DRAM_DB_WIDTH = 16,
   parameter int DRAM_WORD_WIDTH = 256,
-  parameter int DRAM_MASK_WIDTH = 64,
-  parameter int DELAY_CFG_WIDTH = 5
+  parameter int DRAM_MASK_WIDTH = 64
 ) (
 
   // ----------------------------------------------------------------------------------------------
   // ----------------------------clock and reset input  -------------------------------------------
   // ----------------------------------------------------------------------------------------------
 
-  input logic               clk_0_i,        // This is the input clock for all PHY operation
-  input logic               rst_ni,           // Active Low Reset Singal of PHY Module
-
-
-  input logic [DELAY_CFG_WIDTH-1:0]    phy_clk_90_delay_cfg_i, // This signal is used to shift clk_0 to get the 90 shifted clk_90
-  input logic [DELAY_CFG_WIDTH-1:0]    phy_dqs_i_delay_cfg_i,  // This signal is used to shift DQS/DQS# input to align its edge with DB data center point
-  input logic [DELAY_CFG_WIDTH-1:0]    phy_dqs_ni_delay_cfg_i, // This signal is used to shift DQS/DQS# input to align its edge with DB data center point
+  input logic               clk_0_i,        // input clock for all PHY operation
+  input logic               clk_90_i,       // quadrature phase clock to probe
+                                            // the center of the data eye
+  input logic               rst_ni,         // Active Low Reset Singal of PHY Module
 
   input rpc_config_path_pkg::timing_cfg_reg_t   phy_timing_cfg_i,
 
@@ -81,7 +77,10 @@ module rpc_phy #(
   //----------------------------Read Path---------------------------------
   input logic               dqs_i,             // Data Strobe Diff + from RPC DRAM
   input logic               dqs_ni,            // Data Strobe Diff - from RPC DRAM
-  input logic [DRAM_DB_WIDTH-1 : 0]    db_i              // Data Bus from RPC DRAM
+  input logic [DRAM_DB_WIDTH-1 : 0]    db_i,              // Data Bus from RPC DRAM
+
+  input logic               phy_dqs_delay_i
+
 );
 
 
@@ -174,38 +173,21 @@ module rpc_phy #(
 
   // clk_0_i ===> delay_line ===> clk_90 ===> inv ===> clk_270
 
-  logic clk_90, clk_270;
-
-`ifndef FPGA_EMUL
-  generic_delay_D5_O1_5P000_CG0 i_delay_line_clk_90 (
-    .clk_i   (clk_0_i),
-    .enable_i(1'b1),
-    .delay_i (phy_clk_90_delay_cfg_i),
-    .clk_o   (clk_90)
-  );
-
-`else
-  xilinx_phase_shift_90 i_delay_line_clk_90 (
-    .reset   (~rst_ni),
-    .clk_in1 (clk_0_i),
-    .clk_out1(clk_90),
-    .locked  ()
-  );
-`endif
+  logic clk_270;
 
   // Inverting clk90, clk90_n <=> clk270
   tc_clk_inverter i_tc_clk_inverter_clk_270 (
-    .clk_i(clk_90),
+    .clk_i(clk_90_i),
     .clk_o(clk_270)
   );
 
   // propagate clk90 and clk90_n
-  assign clk_o  = clk_90;
+  assign clk_o  = clk_90_i;
   assign clk_no = clk_270;
 
   // get dqs and dqs_n and propagate
   tc_clk_gating i_tc_clk_gating_dqs_o (
-    .clk_i    (clk_90),
+    .clk_i    (clk_90_i),
     .en_i     (dqs_cg_en),
     .test_en_i('0),
     .clk_o    (dqs_o)
@@ -217,7 +199,7 @@ module rpc_phy #(
   );
 
 
-  always_ff @(posedge clk_90 or negedge rst_ni) begin
+  always_ff @(posedge clk_90_i or negedge rst_ni) begin
     if (~rst_ni) begin
       dqs_pair_oe_q <= 0;
     end else begin
@@ -327,49 +309,6 @@ module rpc_phy #(
   ///////////////////////////////////////////////////////Begin RPC DRAM to PHY Input Datapath ///////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-  //////////////////////////////////////////////////
-  ////////// Input Clock Delay Generation  /////////
-  //////////////////////////////////////////////////
-
-  // The i_delay_line cell delays the input clk based on the delay_i input
-  // If delay_i = 5'd31, the clk_o will be a 5ns delayed version of clk_i
-  // The delat is used to shift DQS input by 90 degree so that it sits at the center of data window
-
-  logic dqs_i_delay, dqs_ni_delay;
-
-`ifndef FPGA_EMUL
-  generic_delay_D5_O1_5P000_CG0 i_delay_line_dqs_i (
-    .clk_i   (dqs_i),
-    .enable_i(1'b1),
-    .delay_i (phy_dqs_i_delay_cfg_i),
-    .clk_o   (dqs_i_delay)
-  );
-
-  generic_delay_D5_O1_5P000_CG0 i_delay_line_dqs_ni (
-    .clk_i   (dqs_ni),
-    .enable_i(1'b1),
-    .delay_i (phy_dqs_ni_delay_cfg_i),
-    .clk_o   (dqs_ni_delay)
-  );
-`else  // !`ifndef FPGA_MAP
-  xilinx_phase_shift_90 i_delay_line_dqs (
-    .reset   (~rst_ni),
-    .clk_in1 (dqs_i),
-    .clk_out1(dqs_i_delay),
-    .locked  ()
-  );
-
-  //    xilinx_phase_shift_90 i_delay_line_dqsn
-  //      (
-  //       .reset(~rst_ni),
-  //       .clk_in1(dqs_ni),
-  //       .clk_out1(dqs_ni_delay),
-  //       .locked()
-  //      );
-  assign dqs_ni_delay = dqs_ni;
-`endif
-
   //////////////////////////////////////////////////
   ////////// Input DDR to Internal SDR  ////////////
   //////////////////////////////////////////////////
@@ -383,7 +322,7 @@ module rpc_phy #(
     end
   end
 
-  always_ff @(posedge dqs_i_delay or negedge rst_ni) begin
+  always_ff @(posedge phy_dqs_delay_i or negedge rst_ni) begin
     if (rst_ni == 1'b0) begin
       read_low_data_q <= '0;
     end else begin

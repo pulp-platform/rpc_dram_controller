@@ -32,6 +32,7 @@ module rpc_controller #(
   // ----------------------------------------------------------------------------------------------
 
   input logic clk_i,
+  input logic clk90_i,
   input logic rst_ni,
 
   // ----------------------------------------------------------------------------------------------
@@ -84,7 +85,13 @@ module rpc_controller #(
   input  logic [16-1 : 0]           phy_db_i,
   output logic                      phy_db_oe_o,
   output logic                      phy_db_ie_o,
-  output logic                      phy_db_pd_en_o
+  output logic                      phy_db_pd_en_o,
+
+  output logic                      phy_clk_90_delay_cfg_o,
+  output logic                      phy_dqs_delay_cfg_o,
+  output logic                      phy_dqsn_delay_cfg_o,
+
+  input  logic                      phy_dqs_delay_i
 );
 
   //Initialization Interface
@@ -110,16 +117,8 @@ module rpc_controller #(
   logic [19-1:0] mgnmt_o_ctrl_i_zqc_cmd;
 
 
-  // Phy Delay Line Config
-  logic [5-1:0] mgnmt_o_phy_i_clk_90_delay_cfg;
-  logic [5-1:0] mgnmt_o_phy_i_dqs_i_delay_cfg;
-  logic [5-1:0] mgnmt_o_phy_i_dqs_ni_delay_cfg;
-
   // Phy Timing FSM Configuration
   rpc_config_path_pkg::timing_cfg_reg_t mgnmt_o_ctrl_i_timing_cfg;
-
-
-
 
 
   rpc_config_manager #(
@@ -168,10 +167,9 @@ module rpc_controller #(
     .zqc_valid_o(mgnmt_o_ctrl_i_zqc_valid),
     .zqc_cmd_o  (mgnmt_o_ctrl_i_zqc_cmd),
 
-    .phy_clk_90_delay_cfg_o(mgnmt_o_phy_i_clk_90_delay_cfg),
-    .phy_dqs_i_delay_cfg_o (mgnmt_o_phy_i_dqs_i_delay_cfg),
-    .phy_dqs_ni_delay_cfg_o(mgnmt_o_phy_i_dqs_ni_delay_cfg),
-
+    .phy_clk_90_delay_cfg_o,
+    .phy_dqs_delay_cfg_o,
+    .phy_dqsn_delay_cfg_o,
 
     .phy_timing_cfg_o(mgnmt_o_ctrl_i_timing_cfg)
   );
@@ -182,7 +180,6 @@ module rpc_controller #(
     .ARB_IN_NUM     (4),
     .DRAM_CMD_WIDTH (32),
     .DRAM_DB_WIDTH  (16),
-    .DELAY_CFG_WIDTH(rpc_config_path_pkg::DELAY_CFG_WIDTH),
     .axi_cmd_req_t  (axi_cmd_req_t),
     .axi_cmd_rsp_t  (axi_cmd_rsp_t),
     .phy_req_t      (phy_req_t),
@@ -190,12 +187,8 @@ module rpc_controller #(
 
   ) i_rpc_phy_controller (
     .clk_i (clk_i),
+    .clk90_i,
     .rst_ni(rst_ni),
-
-
-    .phy_clk_90_delay_cfg_i(mgnmt_o_phy_i_clk_90_delay_cfg),
-    .phy_dqs_i_delay_cfg_i (mgnmt_o_phy_i_dqs_i_delay_cfg),
-    .phy_dqs_ni_delay_cfg_i(mgnmt_o_phy_i_dqs_ni_delay_cfg),
 
 
     //Initialization
@@ -252,7 +245,9 @@ module rpc_controller #(
     .phy_db_i      (phy_db_i),
     .phy_db_oe_o   (phy_db_oe_o),
     .phy_db_ie_o   (phy_db_ie_o),
-    .phy_db_pd_en_o(phy_db_pd_en_o)
+    .phy_db_pd_en_o(phy_db_pd_en_o),
+  
+    .phy_dqs_delay_i  
 
   );
 
