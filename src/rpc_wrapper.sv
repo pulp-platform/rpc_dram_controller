@@ -314,7 +314,6 @@ module rpc_wrapper (
 
     .phy_clk_90_delay_cfg_o (phy_clk_90_delay_cfg),
     .phy_dqs_delay_cfg_o    (phy_dqs_delay_cfg),
-    .phy_dqsn_delay_cfg_o   (), // TODO: remove this signal
 
     .phy_dqs_delay_i        (dqs_delay)
 

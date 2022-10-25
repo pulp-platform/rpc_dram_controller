@@ -91,9 +91,8 @@ module rpc_top #(
   output  logic                       phy_db_ie_o,
   output  logic                       phy_db_pd_en_o,
 
-  output  logic                       phy_clk_90_delay_cfg_o,
-  output  logic                       phy_dqs_delay_cfg_o,
-  output  logic                       phy_dqsn_delay_cfg_o,
+  output  logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_clk_90_delay_cfg_o,
+  output  logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_dqs_delay_cfg_o,
 
   input   logic                       phy_dqs_delay_i
 );
@@ -199,7 +198,6 @@ module rpc_top #(
 
     .phy_clk_90_delay_cfg_o,
     .phy_dqs_delay_cfg_o,
-    .phy_dqsn_delay_cfg_o,
 
     .phy_dqs_delay_i
   );

@@ -16,11 +16,7 @@ module rpc_config_manager #(
   // Timer Internal Counter Width
   parameter int unsigned CNT_WIDTH      = 32,
   // Timer Output Command Width
-  parameter int unsigned CMD_WIDTH      = 19,
-
-  // DQS/DQS# Input Delay Line configuration port
-  parameter int unsigned DELAY_CFG_WIDTH = 5
-
+  parameter int unsigned CMD_WIDTH      = 19
 ) (
   // CLK & RST
   input logic clk_i,
@@ -71,9 +67,8 @@ module rpc_config_manager #(
   // ----------------------------------------------------------------------------------------------
   // ----------------------------config_reg -> PHY ------------------------------------------------
   // ----------------------------------------------------------------------------------------------
-  output logic [DELAY_CFG_WIDTH-1:0]  phy_clk_90_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqs_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]  phy_dqsn_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0]  phy_clk_90_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0]  phy_dqs_delay_cfg_o,
 
   output rpc_config_path_pkg::timing_cfg_reg_t          phy_timing_cfg_o
 
@@ -102,9 +97,7 @@ module rpc_config_manager #(
     .ADDR_WIDTH(ADDR_WIDTH),
 
     .CMD_WIDTH     (CMD_WIDTH),
-    .CMD_FIFO_DEPTH(CMD_FIFO_DEPTH),
-
-    .DELAY_CFG_WIDTH(DELAY_CFG_WIDTH)
+    .CMD_FIFO_DEPTH(CMD_FIFO_DEPTH)
 
   ) i_config_reg (
     .clk_i(clk_i),
@@ -147,7 +140,6 @@ module rpc_config_manager #(
     // config_reg -> phy
     .phy_clk_90_delay_cfg_o(phy_clk_90_delay_cfg_o),
     .phy_dqs_i_delay_cfg_o (phy_dqs_delay_cfg_o),
-    .phy_dqs_ni_delay_cfg_o(phy_dqsn_delay_cfg_o),
 
     .phy_timing_cfg_o(phy_timing_cfg_o),
 
@@ -231,7 +223,7 @@ module rpc_config_manager #(
     end
 
   initial
-    assert (DELAY_CFG_WIDTH == 5)
+    assert (rpc_config_path_pkg::DELAY_CFG_WIDTH == 5)
     else begin
       $error("The DQS Delay Config Width must be 5!");
     end

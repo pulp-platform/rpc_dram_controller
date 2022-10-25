@@ -87,9 +87,8 @@ module rpc_controller #(
   output logic                      phy_db_ie_o,
   output logic                      phy_db_pd_en_o,
 
-  output logic                      phy_clk_90_delay_cfg_o,
-  output logic                      phy_dqs_delay_cfg_o,
-  output logic                      phy_dqsn_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_clk_90_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_dqs_delay_cfg_o,
 
   input  logic                      phy_dqs_delay_i
 );
@@ -125,8 +124,7 @@ module rpc_controller #(
     .REG_WIDTH      (rpc_config_path_pkg::REG_WIDTH),
     .ADDR_WIDTH     (rpc_config_path_pkg::ADDR_WIDTH),
     .CMD_FIFO_DEPTH (rpc_config_path_pkg::CMD_FIFO_DEPTH),
-    .CNT_WIDTH      (rpc_config_path_pkg::CNT_WIDTH),
-    .DELAY_CFG_WIDTH(rpc_config_path_pkg::DELAY_CFG_WIDTH)
+    .CNT_WIDTH      (rpc_config_path_pkg::CNT_WIDTH)
   ) i_rpc_config_manager (
     .clk_i (clk_i),
     .rst_ni(rst_ni),
@@ -169,7 +167,6 @@ module rpc_controller #(
 
     .phy_clk_90_delay_cfg_o,
     .phy_dqs_delay_cfg_o,
-    .phy_dqsn_delay_cfg_o,
 
     .phy_timing_cfg_o(mgnmt_o_ctrl_i_timing_cfg)
   );

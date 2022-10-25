@@ -12,7 +12,6 @@ module config_reg #(
   // Output Parameter
   parameter int unsigned CMD_FIFO_DEPTH = 4,
   parameter int unsigned CMD_WIDTH = 19,
-  parameter int unsigned DELAY_CFG_WIDTH = 5,
 
   // Derived Paramter
   localparam int unsigned STROBE_WIDTH = REG_WIDTH / 8
@@ -69,9 +68,8 @@ module config_reg #(
   output rpc_config_path_pkg::zqc_cfg_reg_t             zqc_config_o,
 
   // config_reg ->  DQS, DQS# delay cell
-  output logic [DELAY_CFG_WIDTH-1:0]                    phy_clk_90_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]                    phy_dqs_i_delay_cfg_o,
-  output logic [DELAY_CFG_WIDTH-1:0]                    phy_dqs_ni_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_clk_90_delay_cfg_o,
+  output logic [rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0] phy_dqs_i_delay_cfg_o,
 
   // timing fsm configuration
   output rpc_config_path_pkg::timing_cfg_reg_t          phy_timing_cfg_o,
@@ -163,9 +161,12 @@ module config_reg #(
   rpc_config_path_pkg::delay_line_cfg_reg_t dqs_ni_delay_cfg_reg_d, dqs_ni_delay_cfg_reg_q;
 
 
-  assign phy_clk_90_delay_cfg_o = clk_90_delay_cfg_reg_q[DELAY_CFG_WIDTH-1:0];
-  assign phy_dqs_i_delay_cfg_o  = dqs_i_delay_cfg_reg_q[DELAY_CFG_WIDTH-1:0];
-  assign phy_dqs_ni_delay_cfg_o = dqs_ni_delay_cfg_reg_q[DELAY_CFG_WIDTH-1:0];
+  assign phy_clk_90_delay_cfg_o = clk_90_delay_cfg_reg_q[rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0];
+  assign phy_dqs_i_delay_cfg_o  = dqs_i_delay_cfg_reg_q[rpc_config_path_pkg::DELAY_CFG_WIDTH-1:0];
+
+  //assign phy_dqs_ni_delay_cfg_o = dqs_ni_delay_cfg_reg_q[DELAY_CFG_WIDTH-1:0];
+  // TODO: remove this, we do not need to delay dqsn, because we do not use
+  // differential dqs for reading, only dqs
 
 
   //--------------------------------Timing FSM Configuration Register -------------------------------
@@ -425,7 +426,7 @@ module config_reg #(
     end
 
   initial
-    assert (DELAY_CFG_WIDTH == 5)
+    assert (rpc_config_path_pkg::DELAY_CFG_WIDTH == 5)
     else begin
       $error("The DQS Delay Config Width must be 5!");
     end
