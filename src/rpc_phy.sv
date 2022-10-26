@@ -349,7 +349,7 @@ module rpc_phy #(
   ) i_cdc_fifo (
     // External signal coming from the RPC DRAM
     .src_rst_ni(rst_ni),
-    .src_clk_i(dqs_i_delay),  // dqs_i_delay is the DQS,DQS# diff pair coming from RPC DRAM
+    .src_clk_i(phy_dqs_delay_i),  // dqs_i_delay is the DQS,DQS# diff pair coming from RPC DRAM
     .src_data_i (cdc_src_data),       // read_reg_q is the 32bit signal containing both DDR positive and negative edge input data
     .src_valid_i(cdc_src_valid),
     .src_ready_o(src_ready_o),
