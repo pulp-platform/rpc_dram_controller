@@ -54,6 +54,7 @@ sources:
     - src/config_reg.sv
     - src/rpc_config_manager.sv
     - src/rpc_controller.sv
+    - src/rpc_iobuf_func.sv
     - src/rpc_top.sv
 
   - target: all(any(fpga,xilinx, tech_cells_generic_include_xilinx_xpm))

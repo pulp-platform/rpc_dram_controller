@@ -176,10 +176,18 @@ module rpc_wrapper (
     .oe_dqs_i (oe_dqs),
     .oe_db_i  (oe_db),
 
-    // output enable
+`ifndef FPGA_EMUL  
     .ie_dqs_i (ie_dqs),
     .ie_db_i  (ie_db),
-
+    .pd_en_dqs_i (pd_en_dqs),
+    .pd_en_db_i  (pd_en_db),
+`else // tie to 0 for fpga emulation
+    .ie_dqs_i ('0),
+    .ie_db_i  ('0),
+    .pd_en_dqs_i ('0),
+    .pd_en_db_i  ('0),
+`endif
+     
     // input from tri-state pad
     .in_dqs_o (in_dqs),
     .in_dqsn_o(in_dqsn),
@@ -194,9 +202,6 @@ module rpc_wrapper (
     .out_clkn_i(out_clkn),
     .out_stb_i (out_stb),
     .out_csn_i (out_csn),
-
-    .pd_en_dqs_i (pd_en_dqs),
-    .pd_en_db_i  (pd_en_db),
 
     .clk (rpc_clk),
     .clkn(rpc_clkn),
@@ -227,6 +232,7 @@ module rpc_wrapper (
   // parameterize rpc controller and instantiate it
 
   // rpc dram parameters
+  localparam int unsigned PHY_CLOCK_PERIOD = 5;
   localparam int unsigned DramDataWidth = 256;
   localparam int unsigned DramLenWidth = 6;
   localparam int unsigned DramAddrWidth = 20;
@@ -262,7 +268,7 @@ module rpc_wrapper (
   register_rsp_t reg_rsp;
 
   rpc_top #(
-    .PHY_CLOCK_PERIOD(5),
+    .PHY_CLOCK_PERIOD(PHY_CLOCK_PERIOD),
 
     .AxiDataWidth(AxiDataWidth),
     .AxiAddrWidth(AxiAddrWidth),
