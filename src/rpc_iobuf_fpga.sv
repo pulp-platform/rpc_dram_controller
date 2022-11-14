@@ -66,12 +66,6 @@ module rpc_iobuf (
   inout wire   dbf
 );
 
-  // tie-off unused inputs, leave outputs dangling
-  assign ie_dqs_i = '0;   
-  assign ie_db_i = '0;
-  assign pd_en_dqs_i = '0;   
-  assign pd_en_db_i = '0;
-
   // feedthrough the output signals clk, clkn, stb, csn 
   assign clk = out_clk_i;  
   assign clkn = out_clkn_i;  
