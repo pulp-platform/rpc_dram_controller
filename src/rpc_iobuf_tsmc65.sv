@@ -27,7 +27,7 @@ module rpc_iobuf (
 
   output logic in_dqs_o,
   output logic in_dqsn_o,
-  input logic [15:0]  in_db_o,
+  output logic [15:0] in_db_o,
 
   input logic  out_dqs_i,
   input logic  out_dqsn_i,
@@ -120,7 +120,7 @@ module rpc_iobuf (
   );
 
   PDUW0408CDG i_pad_dqsn  (
-    .I        (out_dqsn_i  ),
+    .I        (out_dqsn_i ),
     .OEN      (~oe_dqs_i  ),
     .DS       (1'b1        ),
     .C        (in_dqsn_o   ),
@@ -130,90 +130,90 @@ module rpc_iobuf (
   );
 
   PDDW0408CDG i_pad_db0  (
-      .I    (in_db_o[0]  ),
+      .I    (out_db_i[0] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[0] ),
+      .C    (in_db_o[0] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db0         )
   );
 
   PDDW0408CDG i_pad_db1  (
-      .I    (in_db_o[1]  ),
+      .I    (out_db_i[1] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[1] ),
+      .C    (in_db_o[1] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db1         )
   );
 
   PDDW0408CDG i_pad_db2  (
-      .I    (in_db_o[2]  ),
+      .I    (out_db_i[2] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[2] ),
+      .C    (in_db_o[2] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db2         )
   );
   PDDW0408CDG i_pad_db3  (
-      .I    (in_db_o[3]  ),
+      .I    (out_db_i[3] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[3] ),
+      .C    (in_db_o[3] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db3         )
   );
   PDDW0408CDG i_pad_db4  (
-      .I    (in_db_o[4]  ),
+      .I    (out_db_i[4] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[4] ),
+      .C    (in_db_o[4] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db4         )
   );
   PDDW0408CDG i_pad_db5  (
-      .I    (in_db_o[5]  ),
+      .I    (out_db_i[5] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[5] ),
+      .C    (in_db_o[5] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db5         )
   );
   PDDW0408CDG i_pad_db6  (
-      .I    (in_db_o[6]  ),
+      .I    (out_db_i[6] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[6] ),
+      .C    (in_db_o[6] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db6         )
   );
   PDDW0408CDG i_pad_db7  (
-      .I    (in_db_o[7]  ),
+      .I    (out_db_i[7] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[7] ),
+      .C    (in_db_o[7] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db7         )
   );
   PDDW0408CDG i_pad_db8  (
-      .I    (in_db_o[8]  ),
+      .I    (out_db_i[8] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[8] ),
+      .C    (in_db_o[8] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (db8         )
   );
   PDDW0408CDG i_pad_db9  (
-      .I    (in_db_o[9]  ),
+      .I    (out_db_i[9] ),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
       .C    (out_db_i[9] ),
@@ -222,55 +222,55 @@ module rpc_iobuf (
       .PAD  (db9         )
   );
   PDDW0408CDG i_pad_dba  (
-      .I    (in_db_o[10]  ),
+      .I    (out_db_i[10]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[10] ),
+      .C    (in_db_o[10] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dba         )
   );
   PDDW0408CDG i_pad_dbb  (
-      .I    (in_db_o[11]  ),
+      .I    (out_db_i[11]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[11] ),
+      .C    (in_db_o[11] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dbb         )
   );
   PDDW0408CDG i_pad_dbc  (
-      .I    (in_db_o[12]  ),
+      .I    (out_db_i[12]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[12] ),
+      .C    (in_db_o[12] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dbc         )
   );
   PDDW0408CDG i_pad_dbd  (
-      .I    (in_db_o[13]  ),
+      .I    (out_db_i[13]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[13] ),
+      .C    (in_db_o[13] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dbd         )
   );
   PDDW0408CDG i_pad_dbe  (
-      .I    (in_db_o[14]  ),
+      .I    (out_db_i[14]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[14] ),
+      .C    (in_db_o[14] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dbe         )
   );
   PDDW0408CDG i_pad_dbf  (
-      .I    (in_db_o[15]  ),
+      .I    (out_db_i[15]),
       .OEN  (~oe_db_i    ),
       .DS   (1'b1        ),
-      .C    (out_db_i[15] ),
+      .C    (in_db_o[15] ),
       .IE   (ie_db_i     ),
       .PE   (pd_en_db_i  ),
       .PAD  (dbf         )

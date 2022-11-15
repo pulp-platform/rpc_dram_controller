@@ -27,7 +27,7 @@ module rpc_iobuf (
 
   output logic in_dqs_o,
   output logic in_dqsn_o,
-  input  logic [15:0] in_db_o,
+  output logic [15:0] in_db_o,
 
   input logic  out_dqs_i,
   input logic  out_dqsn_i,
